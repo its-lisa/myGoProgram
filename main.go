@@ -28,3 +28,4 @@ func handleRequests() {
 func getMessage() string {
 	return "Here is the quote I am going to test: " + quote.Glass()
 }
+
