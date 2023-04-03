@@ -1,9 +1,8 @@
 # syntax=docker/dockerfile:1
 
-FROM golang:1.16-alpine
+FROM golang:1.20-alpine
 
 WORKDIR /app
-
 # Download necessary Go modules
 COPY go.mod ./
 COPY go.sum ./
@@ -15,7 +14,7 @@ RUN go build -o /docker-gs-ping
 
 EXPOSE 8080
 
-CMD [ "/docker-gs-ping" ]
+CMD [ " /docker-gs-ping" ]
 # RUN apt-get -y update
 # RUN apt-get -y install nginx
 # COPY index.html /var/www/html/index.nginx-debian.html
