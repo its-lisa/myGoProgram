@@ -6,6 +6,9 @@ name: Docker
 # documentation.
 
 on:
+  workflow_run:
+    workflows: [Go Test]
+    types: [completed]
   schedule:
     - cron: '42 6 * * *'
   push:
@@ -23,8 +26,7 @@ env:
 
 
 jobs:
-  build:
-
+  on-success:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -32,7 +34,7 @@ jobs:
       # This is used to complete the identity challenge
       # with sigstore/fulcio when running outside of PRs.
       id-token: write
-
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -94,3 +96,8 @@ jobs:
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
         run: echo "${{ steps.meta.outputs.tags }}" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
+  on-failure:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - run: echo 'Go Test failed'
