@@ -1,8 +1,9 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
 	"rsc.io/quote"
 )
 
@@ -29,3 +30,4 @@ func getMessage() string {
 	return "Here is the quote I am going to test: " + quote.Glass()
 }
 
+//test
