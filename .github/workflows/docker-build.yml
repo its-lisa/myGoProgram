@@ -110,7 +110,7 @@ jobs:
         #   aws-region: eu-west-1
         #   ssm-value-type: "String"
       - name: Update AWS SSM Parameter
-        run: aws ssm put-parameter --name myProgramLabel --value "${{ steps.meta.outputs.tags }}" --type String --overwrite
+        run: aws ssm put-parameter --name myProgramLabel --value "${{ steps.build-and-push.outputs.digest }}" --type String --overwrite
   on-failure:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
