@@ -1,4 +1,4 @@
-name: Docker
+name: Docker build
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -96,6 +96,21 @@ jobs:
         # This step uses the identity token to provision an ephemeral certificate
         # against the sigstore community Fulcio instance.
         run: echo "${{ steps.meta.outputs.tags }}" | xargs -I {} cosign sign {}@${{ steps.build-and-push.outputs.digest }}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: eu-east-1
+      # - name: Add hello SecureString to SSM
+        # uses: dwardu89/aws-ssm-parameter-store@latest
+        # with:
+        #   ssm-path: "myProgramLabel" #parametrs
+        #   ssm-value: ${{ steps.meta.outputs.tags }} #tags
+        #   aws-region: eu-west-1
+        #   ssm-value-type: "String"
+      - name: Update AWS SSM Parameter
+        run: aws ssm put-parameter --name myProgramLabel --value "${{ steps.meta.outputs.tags }}" --type String --overwrite
   on-failure:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
