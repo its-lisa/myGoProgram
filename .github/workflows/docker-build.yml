@@ -6,6 +6,9 @@ name: Docker build
 # documentation.
 
 on:
+  workflow_run:
+    workflows: [Go Test]
+    types: [completed]
   schedule:
     - cron: '42 6 * * *'
   push:
@@ -23,8 +26,7 @@ env:
 
 
 jobs:
-  build:
-
+  on-success:
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -32,7 +34,7 @@ jobs:
       # This is used to complete the identity challenge
       # with sigstore/fulcio when running outside of PRs.
       id-token: write
-
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -109,3 +111,8 @@ jobs:
         #   ssm-value-type: "String"
       - name: Update AWS SSM Parameter
         run: aws ssm put-parameter --name myProgramLabel --value "${{ steps.meta.outputs.tags }}" --type String --overwrite
+  on-failure:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - run: echo 'Go Test failed'
