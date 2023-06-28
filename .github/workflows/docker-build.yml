@@ -90,7 +90,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
           aws-region: us-east-1
       - name: Update AWS SSM Parameter
-        run: aws ssm put-parameter --name myProgramLabel --value "${{ steps.build-and-push.outputs.digest }}" --type String --overwrite
+        run: aws ssm put-parameter --name myProgramLabel --value "${{ steps.meta.outputs.tags }}" --type String --overwrite
   on-failure:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
