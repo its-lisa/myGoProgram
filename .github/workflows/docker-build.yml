@@ -91,6 +91,9 @@ jobs:
           aws-region: us-east-1
       - name: Update AWS SSM Parameter
         run: aws ssm put-parameter --name myProgramLabel --value "${{ steps.meta.outputs.tags }}" --type String --overwrite
+      - name: Tag EC2 instances
+        run: aws ec2 create-tags --resources $(aws ec2 describe-instances --filters "Name=tag:Service,Values=my-service" --query "Reservations[].Instances[].InstanceId" --output text)
+      
   on-failure:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
