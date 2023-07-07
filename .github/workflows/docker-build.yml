@@ -91,8 +91,10 @@ jobs:
           aws-region: us-east-1
       - name: Update AWS SSM Parameter
         run: aws ssm put-parameter --name myProgramLabel --value "${{ steps.meta.outputs.tags }}" --type String --overwrite
-      - name: Tag EC2 instances
-        run: aws ec2 create-tags --resources $(aws ec2 describe-instances --filters "Name=tag:Service,Values=my-service" --query "Reservations[].Instances[].InstanceId" --output text)
+      - name: Create EC2 instance
+        run: aws ec2 run-instances --launch-template LaunchTemplateName=DockerMyProdSrever --count 1
+      # - name: Tag EC2 instances
+      #   run: aws ec2 add-tags --resources-id --tags Key=ServiceVersion,Value=1.2.3
       
   on-failure:
     runs-on: ubuntu-latest
