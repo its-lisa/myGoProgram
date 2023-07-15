@@ -91,6 +91,21 @@ jobs:
           aws-region: us-east-1
       - name: Update AWS SSM Parameter
         run: aws ssm put-parameter --name myProgramLabel --value "${{ steps.meta.outputs.tags }}" --type String --overwrite
+      - name: Get EC2 instance IDs
+        id: describe-instances
+        # run: INSTANCE_IDS=$(aws ec2 describe-instances --query 'Reservations[].Instances[].InstanceId' --filters "Name=tag:Name,Values=YourEC2InstanceName" --output text) 
+        #   echo "::set-output name=instance_ids::$INSTANCE_IDS"
+        run: INSTANCE_IDS=$(aws ec2 describe-instances \
+            --query 'Reservations[].Instances[].InstanceId' \
+            --output text)
+          echo "::set-output name=instance_ids::$INSTANCE_IDS"
+      - name: Terminate EC2 instances
+        run: INSTANCE_IDS="${{ steps.describe-instances.outputs.instance_ids }}"
+            if [[ -n "$INSTANCE_IDS" ]]; then
+              aws ec2 terminate-instances --instance-ids $INSTANCE_IDS
+            else
+              echo "No EC2 instances found to terminate."
+            fi
       - name: Create EC2 instance
         run: aws ec2 run-instances --launch-template LaunchTemplateName=DockerMyProdSrever --count 1
       # - name: Tag EC2 instances
