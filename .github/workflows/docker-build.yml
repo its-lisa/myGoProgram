@@ -95,11 +95,12 @@ jobs:
         id: describe-instances
         # run: INSTANCE_IDS=$(aws ec2 describe-instances --query 'Reservations[].Instances[].InstanceId' --filters "Name=tag:Name,Values=YourEC2InstanceName" --output text) 
         #   echo "::set-output name=instance_ids::$INSTANCE_IDS"
-        run: INSTANCE_IDS=$(aws ec2 describe-instances \
+        run: |
+            INSTANCE_IDS=$(aws ec2 describe-instances \
             --query 'Reservations[].Instances[].InstanceId' \
             --filters "Name=tag:ServiceName,Values=MyGoProgram" \
             --output text)
-          echo "::set-output name=instance_ids::$INSTANCE_IDS"
+            echo "instance_ids=$INSTANCE_IDS" >> "$GITHUB_OUTPUT"
       - name: Terminate EC2 instances
         run: INSTANCE_IDS="${{ steps.describe-instances.outputs.instance_ids }}"
             if [[ -n "$INSTANCE_IDS" ]]; then
