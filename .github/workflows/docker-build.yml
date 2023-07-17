@@ -111,8 +111,6 @@ jobs:
             fi
       - name: Create EC2 instance
         run: aws ec2 run-instances --launch-template LaunchTemplateName=DockerMyProdSrever --count 1
-      # - name: Tag EC2 instances
-      #   run: aws ec2 add-tags --resources-id --tags Key=ServiceVersion,Value=1.2.3
       
   on-failure:
     runs-on: ubuntu-latest
