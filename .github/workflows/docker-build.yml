@@ -97,7 +97,7 @@ jobs:
         #   echo "::set-output name=instance_ids::$INSTANCE_IDS"
         run: INSTANCE_IDS=$(aws ec2 describe-instances \
             --query 'Reservations[].Instances[].InstanceId' \
-            --filters "Name=tag:Name,Values=MyInstace" \
+            --filters "Name=tag:ServiceName,Values=MyGoProgram" \
             --output text)
           echo "::set-output name=instance_ids::$INSTANCE_IDS"
       - name: Terminate EC2 instances
