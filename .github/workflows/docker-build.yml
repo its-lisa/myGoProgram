@@ -102,8 +102,10 @@ jobs:
             --output text)
             echo "instance_ids=$INSTANCE_IDS" >> "$GITHUB_OUTPUT"
       - name: Terminate EC2 instances
-        run: INSTANCE_IDS="${{ steps.describe-instances.outputs.instance_ids }}"
-            if [[ -n "$INSTANCE_IDS" ]]; then
+        run: |
+            INSTANCE_IDS="${{ steps.describe-instances.outputs.instance_ids }}"
+            if [[-n "$INSTANCE_IDS"]]
+            then
               aws ec2 terminate-instances --instance-ids $INSTANCE_IDS
             else
               echo "No EC2 instances found to terminate."
