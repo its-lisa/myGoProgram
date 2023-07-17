@@ -96,7 +96,7 @@ jobs:
         run: |
             INSTANCE_IDS=$(aws ec2 describe-instances \
             --query 'Reservations[].Instances[].InstanceId' \
-            --filters "Name=ServiceName,Values=MyGoProgram" \
+            --filters "Name=tag:ServiceName,Values=MyGoProgram" \
             --output text)
             echo "instance_ids=$INSTANCE_IDS" >> "$GITHUB_OUTPUT"
       - name: Terminate EC2 instances
