@@ -110,7 +110,7 @@ jobs:
               echo "No EC2 instances found to terminate."
             fi
       - name: Create EC2 instance
-        run: aws ec2 run-instances --launch-template LaunchTemplateName=DockerMyProdSrever --count 1 --tag-specifications 'ResourceType=instance,Tags=[{Key=Version,Value=1}]'  'ResourceType=volume,Tags=[{Key=Version,Value=1}]'
+        run: aws ec2 run-instances --launch-template LaunchTemplateName=DockerMyProdSrever --tag-specifications 'ResourceType=instance,Tags=[{Key=Version,Value=1}]' 'ResourceType=volume,Tags=[{Key=Version,Value=1}]' --count 1
       
   on-failure:
     runs-on: ubuntu-latest
