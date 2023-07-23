@@ -99,8 +99,8 @@ jobs:
             --filters "Name=tag:ServiceName,Values=MyGoProgram" \
             --output text)
             echo "instance_ids=$INSTANCE_IDS" >> "$GITHUB_OUTPUT"
-            INSTANCE_TAGS=$(aws ec2 describe-instances --instance-ids INSTANCE_IDS --query 'Reservations[].Instances[].Tags[?Key==`Version`].Value')
-            echo "$INSTANCE_TAGS"
+            # INSTANCE_TAGS=$(aws ec2 describe-instances --instance-ids INSTANCE_IDS --query 'Reservations[].Instances[].Tags[?Key==`Version`].Value')
+            # echo "$INSTANCE_TAGS"
       - name: Terminate EC2 instances
         run: |
             INSTANCE_IDS="${{ steps.describe-instances.outputs.instance_ids }}" 
