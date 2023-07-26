@@ -95,8 +95,7 @@ jobs:
         id: describe-instances
         run: |
             INSTANCE_IDS=$(aws ec2 describe-instances \
-            --query 'Reservations[].Instances[].InstanceId' \
-            --filters "Name=tag:ServiceName,Values=MyGoProgram", "Name=tag:Version,Values!=${{ steps.meta.outputs.tags }}" \
+            --query 'Reservations[].Instances[?Tags[?Key==`ServiceName` && Value==`MyGoProgram`] && Tags[?Key==`Version` && Value!=`${{ steps.meta.outputs.tags }}`]].InstanceId' \
             --output text)
             echo "instance_ids=$INSTANCE_IDS" >> "$GITHUB_OUTPUT"
             # INSTANCE_TAGS=$(aws ec2 describe-instances --instance-ids $INSTANCE_IDS --query 'Reservations[].Instances[].Tags[?Key==`Version`].Value')
@@ -112,7 +111,7 @@ jobs:
               echo "No EC2 instances found to terminate."
             fi
       - name: Create EC2 instance
-        run: aws ec2 run-instances --launch-template LaunchTemplateName=DockerMyProdSrever --tag-specifications 'ResourceType=instance,Tags=[{ Key=Version, Value=${{ steps.meta.outputs.tags }} }]' --count 1
+        run: aws ec2 run-instances --launch-template LaunchTemplateName=DockerMyProdSrever --tag-specifications "ResourceType=instance,Tags=[{ Key=Version, Value=${{ steps.meta.outputs.tags }} }]" --count 1
   on-failure:
     runs-on: ubuntu-latest
     if: ${{ github.event.workflow_run.conclusion == 'failure' }}
