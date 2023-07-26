@@ -95,8 +95,7 @@ jobs:
         id: describe-instances
         run: |
             INSTANCE_IDS=$(aws ec2 describe-instances \
-            --query 'Reservations[].Instances[].InstanceId' \
-            --filters "Name=tag:ServiceName,Values=MyGoProgram", "Name=tag:Version,Values!=${{ steps.meta.outputs.tags }}" \
+            --query 'Reservations[].Instances[?Tags[?Key==`ServiceName` && Value==`MyGoProgram`] && Tags[?Key==`Version` && Value!=`${{ steps.meta.outputs.tags }}`]].InstanceId' \
             --output text)
             echo "instance_ids=$INSTANCE_IDS" >> "$GITHUB_OUTPUT"
             # INSTANCE_TAGS=$(aws ec2 describe-instances --instance-ids $INSTANCE_IDS --query 'Reservations[].Instances[].Tags[?Key==`Version`].Value')
